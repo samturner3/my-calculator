@@ -4,6 +4,8 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     justifyContent: 'center',
+    borderTop: '2px solid #d3d3d361',
+    marginTop: '20px',
   },
   button: {
     margin: theme.spacing(1), 

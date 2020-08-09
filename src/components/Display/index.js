@@ -6,10 +6,13 @@ import Grid from '@material-ui/core/Grid';
 import useStyles from './styles'
 
 
-const Display = () => {
+const Display = ({ result, preResult }) => {
   const classes = useStyles();
   return (
-    <div className={classes.root}>Display</div>
+    <div className={classes.root}>
+      <div className={classes.result}>{result}</div>
+      <div className={classes.preResult}>{preResult}</div>
+    </div>
   )
 }
 

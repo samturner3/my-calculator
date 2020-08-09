@@ -5,6 +5,20 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
   },
+  divider: {
+    borderBottom: '2px solid #d3d3d361',
+    marginBottom: '10px',
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  buttonDivider: {
+    display: 'flex',
+    flexGrow: '1',
+    color: 'red',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   button: {
     margin: theme.spacing(1), 
     width: '100%',
