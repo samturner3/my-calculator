@@ -128,7 +128,39 @@ export const keyPadButtons = [
 
 export const scientificButtons = [
   {
-    display: 'sc',
+    display: '(',
+    scientific: true
+  }, 
+  {
+    display: ')',
+    scientific: true
+  }, 
+  {
+    display: 'mc',
+    scientific: true
+  }, 
+  {
+    display: 'm+',
+    scientific: true
+  }, 
+  {
+    display: 'm-',
+    scientific: true
+  }, 
+  {
+    display: 'mr',
+    scientific: true
+  }, 
+  {
+    display: '2nd',
+    scientific: true
+  }, 
+  {
+    display: 'x²',
+    scientific: true
+  }, 
+  {
+    display: 'x³',
     scientific: true
   }, 
   {
@@ -160,91 +192,59 @@ export const scientificButtons = [
     scientific: true
   }, 
   {
-    display: 'sc',
+    display: 'In',
     scientific: true
   }, 
   {
-    display: 'sc',
+    display: 'log',
     scientific: true
   }, 
   {
-    display: 'sc',
+    display: 'x!',
     scientific: true
   }, 
   {
-    display: 'sc',
+    display: 'sin',
     scientific: true
   }, 
   {
-    display: 'sc',
+    display: 'cos',
     scientific: true
   }, 
   {
-    display: 'sc',
+    display: 'tan',
     scientific: true
   }, 
   {
-    display: 'sc',
+    display: 'e',
     scientific: true
   }, 
   {
-    display: 'sc',
+    display: 'EE',
     scientific: true
   }, 
   {
-    display: 'sc',
+    display: 'Rad',
     scientific: true
   }, 
   {
-    display: 'sc',
+    display: 'sinh',
     scientific: true
   }, 
   {
-    display: 'sc',
+    display: 'cosh',
     scientific: true
   }, 
   {
-    display: 'sc',
+    display: 'tanh',
     scientific: true
   }, 
   {
-    display: 'sc',
+    display: '\pi ',
     scientific: true
   }, 
   {
-    display: 'sc',
-    scientific: true
-  }, 
-  {
-    display: 'sc',
-    scientific: true
-  }, 
-  {
-    display: 'sc',
-    scientific: true
-  }, 
-  {
-    display: 'sc',
-    scientific: true
-  }, 
-  {
-    display: 'sc',
-    scientific: true
-  }, 
-  {
-    display: 'sc',
-    scientific: true
-  }, 
-  {
-    display: 'sc',
-    scientific: true
-  }, 
-  {
-    display: 'sc',
-    scientific: true
-  }, 
-  {
-    display: 'sc',
+    display: 'Rand',
     scientific: true
   }, 
 ]

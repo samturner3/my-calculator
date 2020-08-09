@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 // import PropTypes from 'prop-types';
-import { isNumber, isFinite } from 'lodash'
+import { isNumber } from 'lodash'
+import moment from 'moment'
 
 import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton'
@@ -12,11 +13,14 @@ import useStyles from './styles'
 
 import KeyPad from '../Keypad'
 import Display from '../Display'
+import History from '../History'
 
 const Calculator = () => {
   const classes = useStyles()
 
-  const [commands, setCommands] = useState('')
+  const [historyOn, setHistoryOn] = useState(false);
+
+  const [commands, setCommands] = useState('');
   const [operator, setOperator] = useState('');
   const [memory, setMemory] = useState('');
   
@@ -35,64 +39,66 @@ const Calculator = () => {
   });
 
   const onClick = button => {
-    setInvalid(false)
-    if (button.function === 'C') return reset()
-    if (button.function === '=') return calculate()
-    if (isNumber(button.function)) return addNumberToCommand(button)
-    else {
-      let command = button.function
-      if (command === '()') {
-        setOpenBracket(!openBracket)
-        if (openBracket) command = ')'
-        else command = '('
-        return setCommands(commands => commands + command.toString())
-      }
-      else if (command === '+/-') {
-        console.log('commands: ', commands);
-        console.log('commands: ', "-" + commands);
-
-        if ( commands.indexOf("-") === 0 ) setCommands(commands.substring(1))
-        else setCommands("-" + commands);
-      }
-      else if (command === '.') {
-        if (!commands.includes('.')) setCommands(commands + '.');
-      }
-      else if (command === '%') {
-        setPercentExists(true);
-        if (commands === '' && memory === '' && result !== ''){
-          setCommands(result + '/100');
-          setResult('');
-          setOperator('');
-        } else setCommands(commands + '/100')
-        // if continuing from result
-      }
+    if (!historyOn){
+      setInvalid(false)
+      if (button.function === 'C') return reset()
+      if (button.function === '=') return calculate()
+      if (isNumber(button.function)) return addNumberToCommand(button)
       else {
-        // else is an operator
-        // console.log('command: ', command)
-        // console.log('commands: ', commands)
-        // console.log('memory: ', memory)
-        // console.log('operator: ', operator)
-        // console.log('result: ', result)
-        // check if there is an ( and no )
-        if (commands.includes('(') && !commands.includes(')')) setCommands(commands + command)
-        // check if operator has already been set
-        else if (operator.length) {
-          console.log('existing operator')
-          setMemory(memory + operator + commands);
-          setCommands('');
-          setOperator(command);
-          console.log('new Memory: ', memory + operator + commands)
+        let command = button.function
+        if (command === '()') {
+          setOpenBracket(!openBracket)
+          if (openBracket) command = ')'
+          else command = '('
+          return setCommands(commands => commands + command.toString())
         }
-        // if continuing from result
-        else if (commands === '' && memory === '' && result !== ''){
-          setMemory(result);
-          setResult('');
-          setOperator(command);
+        else if (command === '+/-') {
+          console.log('commands: ', commands);
+          console.log('commands: ', "-" + commands);
+
+          if ( commands.indexOf("-") === 0 ) setCommands(commands.substring(1))
+          else setCommands("-" + commands);
+        }
+        else if (command === '.') {
+          if (!commands.includes('.')) setCommands(commands + '.');
+        }
+        else if (command === '%') {
+          setPercentExists(true);
+          if (commands === '' && memory === '' && result !== ''){
+            setCommands(result + '/100');
+            setResult('');
+            setOperator('');
+          } else setCommands(commands + '/100')
+          // if continuing from result
         }
         else {
-          setMemory(commands);
-          setCommands('');
-          setOperator(command);
+          // else is an operator
+          // console.log('command: ', command)
+          // console.log('commands: ', commands)
+          // console.log('memory: ', memory)
+          // console.log('operator: ', operator)
+          // console.log('result: ', result)
+          // check if there is an ( and no )
+          if (commands.includes('(') && !commands.includes(')')) setCommands(commands + command)
+          // check if operator has already been set
+          else if (operator.length) {
+            console.log('existing operator')
+            setMemory(memory + operator + commands);
+            setCommands('');
+            setOperator(command);
+            console.log('new Memory: ', memory + operator + commands)
+          }
+          // if continuing from result
+          else if (commands === '' && memory === '' && result !== ''){
+            setMemory(result);
+            setResult('');
+            setOperator(command);
+          }
+          else {
+            setMemory(commands);
+            setCommands('');
+            setOperator(command);
+          }
         }
       }
     }
@@ -135,7 +141,9 @@ const Calculator = () => {
 
   const calculate = () => {
     try {
-      setResult(calculateStr())
+      const result = calculateStr();
+      setResult(result)
+      addToHistory(result)
       setCommands('')
       setMemory('')
       setOperator('')
@@ -146,13 +154,29 @@ const Calculator = () => {
     }
   }
 
+  const addToHistory = (resultToSet) => {
+    const existingHistory = JSON.parse(localStorage.getItem('history'));
+    let historyToSet;
+    if (existingHistory) {
+      historyToSet = [...existingHistory, { date: moment(), equation: `${memory} ${operator} ${commands} = ${resultToSet}`}]
+    } else {
+      historyToSet = [{date: moment(), equation: `${memory} ${operator} ${commands} = ${resultToSet}`}]
+    }
+    localStorage.setItem('history', JSON.stringify(historyToSet));
+
+  }
+
   return (
     <div className={classes.root}>
       <Grid container spacing={3} item xs={12} sm={8} md={6} lg={10} xl={10}>
-        <Display result={result} preResult={display} />
+        {historyOn ? (
+          <History history={JSON.parse(localStorage.getItem('history'))} />
+        ) : (
+          <Display result={result} preResult={display} />
+        )}
         <div className={classes.divider} >
           <IconButton >
-            <HistoryIcon />
+            <HistoryIcon onClick={() => setHistoryOn(!historyOn)} />
           </IconButton>
           <div className={classes.buttonDivider} >
             {invalid && (<><ErrorIcon />{' '}Invalid</>)}
