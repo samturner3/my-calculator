@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 // import PropTypes from 'prop-types';
 import { isNumber, isFinite } from 'lodash'
 
@@ -15,15 +15,27 @@ import Display from '../Display'
 
 const Calculator = () => {
   const classes = useStyles()
-  const [result, setResult] = useState('0')
-  const [commands, setCommands] = useState([])
-  const [openBracket, setOpenBracket] = useState(false)
-  const [negativeNum, setNegativeNum] = useState(false)
-  const [invalid, setInvalid] = useState(false)
 
-  const [operatorAllowed, setOperatorAllowed] = useState(false)
+  const [commands, setCommands] = useState('')
+  const [operator, setOperator] = useState('');
+  const [memory, setMemory] = useState('');
+  
+  const [percentExists, setPercentExists] = useState(false);
+
+  const [result, setResult] = useState('')
+  const [openBracket, setOpenBracket] = useState(false)
+  const [invalid, setInvalid] = useState(false)
+  const [display, setDisplay] = useState('');
+
+  useEffect(() => {
+    // Update the document title using the browser API
+    const display = memory + operator + commands;
+    if (percentExists === true) setDisplay(display.replace('/100', '%'))
+    else setDisplay(display);
+  });
 
   const onClick = button => {
+    setInvalid(false)
     if (button.function === 'C') return reset()
     if (button.function === '=') return calculate()
     if (isNumber(button.function)) return addNumberToCommand(button)
@@ -31,60 +43,104 @@ const Calculator = () => {
       let command = button.function
       if (command === '()') {
         setOpenBracket(!openBracket)
-        // command = openBracket ? ')' : '(';
         if (openBracket) command = ')'
         else command = '('
-        return setCommands(commands => [...commands, command.toString()])
+        return setCommands(commands => commands + command.toString())
       }
-      if (command === '+/-') {
-        setNegativeNum(!negativeNum)
-        command = (negativeNum ? '' : '-')
-      }
-      // else is an operator
-      // Check if last command was a number
-      if (isFinite(parseInt(commands[commands.length - 1])) || commands[commands.length - 1] === ')') {
-        setCommands(commands => [...commands, command.toString()])
-      };
-      // if (operatorAllowed){
+      else if (command === '+/-') {
+        console.log('commands: ', commands);
+        console.log('commands: ', "-" + commands);
 
-      //   setOperatorAllowed(false);
-      // }
-      setInvalid(false)
+        if ( commands.indexOf("-") === 0 ) setCommands(commands.substring(1))
+        else setCommands("-" + commands);
+      }
+      else if (command === '.') {
+        if (!commands.includes('.')) setCommands(commands + '.');
+      }
+      else if (command === '%') {
+        setPercentExists(true);
+        if (commands === '' && memory === '' && result !== ''){
+          setCommands(result + '/100');
+          setResult('');
+          setOperator('');
+        } else setCommands(commands + '/100')
+        // if continuing from result
+      }
+      else {
+        // else is an operator
+        // console.log('command: ', command)
+        // console.log('commands: ', commands)
+        // console.log('memory: ', memory)
+        // console.log('operator: ', operator)
+        // console.log('result: ', result)
+        // check if there is an ( and no )
+        if (commands.includes('(') && !commands.includes(')')) setCommands(commands + command)
+        // check if operator has already been set
+        else if (operator.length) {
+          console.log('existing operator')
+          setMemory(memory + operator + commands);
+          setCommands('');
+          setOperator(command);
+          console.log('new Memory: ', memory + operator + commands)
+        }
+        // if continuing from result
+        else if (commands === '' && memory === '' && result !== ''){
+          setMemory(result);
+          setResult('');
+          setOperator(command);
+        }
+        else {
+          setMemory(commands);
+          setCommands('');
+          setOperator(command);
+        }
+      }
     }
   }
 
   const backSpace = () => {
-    var array = [...commands] // make a separate copy of the array
-    if (array[array.length - 1] === ')' || array[array.length - 1] === '(') setOpenBracket(!openBracket) // if removed item was ( or )
-    array.splice(-1, 1)
-    setCommands(array)
+    var string = commands // make a separate copy of the array
+    if (string.slice(-1) === ')' || string.slice(-1) === '(') setOpenBracket(!openBracket) // if removed item was ( or )
+    setCommands(string.slice(0, -1));
   }
 
   const reset = () => {
-    setResult('0')
-    setCommands([])
+    setResult('')
+    setCommands('')
+    setMemory('')
+    setOperator('')
+    setDisplay('')
     setInvalid(false)
     setOpenBracket(false)
+    setPercentExists(false)
   }
 
   const addNumberToCommand = button => {
-    setCommands(commands => [...commands, button.function.toString()])
+    const commandCompare = commands;
+    console.log('commands', commands);
+    console.log('percentExists', percentExists);
+    console.log('commandCompare.slice(-4)', commandCompare.slice(-4));
+    if (percentExists && commandCompare.slice(-4) === '/100') setCommands(commands + '*' + button.function.toString())
+    else setCommands(commands + button.function.toString())
     setInvalid(false)
-    setOperatorAllowed(true)
     // console.log(' added ', button.function.toString())
     // console.log(typeof button.function.toString())
+    // console.log('commands: ', commands)
   }
 
   const calculateStr = () => {
-    console.log('calculateStr: ', result + commands.join(''))
-    return new Function('return ' + result + commands.join(''))()
+    console.log('calculateStr: ', memory , operator , commands)
+    return new Function('return ' + memory + operator + commands)()
   }
 
   const calculate = () => {
     try {
       setResult(calculateStr())
-      setCommands([])
+      setCommands('')
+      setMemory('')
+      setOperator('')
       setOpenBracket(false)
+      setPercentExists(false)
     } catch (e) {
       setInvalid(true)
     }
@@ -93,7 +149,7 @@ const Calculator = () => {
   return (
     <div className={classes.root}>
       <Grid container spacing={3} item xs={6}>
-        <Display result={result} preResult={commands} />
+        <Display result={result} preResult={display} />
         <div className={classes.divider} >
           <IconButton >
             <HistoryIcon />
