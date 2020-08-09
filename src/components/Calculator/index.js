@@ -148,7 +148,7 @@ const Calculator = () => {
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={3} item xs={6}>
+      <Grid container spacing={3} item xs={12} sm={8} md={6} lg={10} xl={10}>
         <Display result={result} preResult={display} />
         <div className={classes.divider} >
           <IconButton >
@@ -161,7 +161,7 @@ const Calculator = () => {
             <BackspaceIcon onClick={backSpace} />
           </IconButton>
         </div>
-        <KeyPad onKeypadClick={onClick}/>
+          <KeyPad onKeypadClick={onClick}/>
       </Grid>
     </div>
   )

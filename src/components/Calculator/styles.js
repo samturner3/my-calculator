@@ -5,6 +5,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
   },
+  keypadsContain: {
+    display: 'flex',
+  },
   divider: {
     borderBottom: '2px solid #d3d3d361',
     marginBottom: '10px',

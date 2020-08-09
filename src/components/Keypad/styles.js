@@ -16,6 +16,14 @@ const useStyles = makeStyles(theme => ({
     fontSize: theme.spacing(4),
     borderRadius: theme.spacing(5),
   },
+  buttonGridContain: {
+    [theme.breakpoints.down('md')]: {
+      maxWidth: '25%',
+      flexBasis: '25%',
+    },
+    maxWidth: '10%',
+    flexBasis: '10%',
+  },
   redText: {
     color: 'red',
   },
