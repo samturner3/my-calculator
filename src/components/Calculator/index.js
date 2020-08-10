@@ -181,11 +181,11 @@ const Calculator = () => {
           <div className={classes.buttonDivider} >
             {invalid && (<><ErrorIcon />{' '}Invalid</>)}
           </div>
-          <IconButton >
+          <IconButton disabled={historyOn} >
             <BackspaceIcon onClick={backSpace} />
           </IconButton>
         </div>
-          <KeyPad onKeypadClick={onClick}/>
+          <KeyPad onKeypadClick={onClick} historyOn={historyOn}/>
       </Grid>
     </div>
   )

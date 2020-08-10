@@ -11,7 +11,7 @@ import useStyles from './styles'
 import { keyPadButtons, scientificButtons } from '../../constants'
 
 
-const KeyPadButtons = ({classes, onKeypadClick}) => {
+const KeyPadButtons = ({classes, onKeypadClick, historyOn}) => {
 const theme = useTheme();
 const matches = useMediaQuery(theme.breakpoints.down('md'));
 //inset a new button for scientific
@@ -31,7 +31,7 @@ return (matches ? keyPadButtons : keyPadButtonsWithScience).map((button, i) => {
  const buttonClass = button.class;
   return (
     <Grid item xs={3} className={classes.buttonGridContain}>
-      <Button onClick={() => !button.scientific && onKeypadClick(button)} key={i} className={`${classes.button} ${classes[buttonClass]}`} variant='contained'>
+      <Button onClick={() => !button.scientific && onKeypadClick(button)} disabled={historyOn} key={i} className={`${classes.button} ${classes[buttonClass]}`} variant='contained'>
         {button.display}
       </Button>
     </Grid>)
@@ -39,11 +39,11 @@ return (matches ? keyPadButtons : keyPadButtonsWithScience).map((button, i) => {
 }
 
 
-const KeyPad = ({ onKeypadClick }) => {
+const KeyPad = ({ onKeypadClick, historyOn }) => {
   const classes = useStyles();
   return (
     <Grid container spacing={3}>
-      <KeyPadButtons classes={classes} onKeypadClick={onKeypadClick} />
+      <KeyPadButtons classes={classes} onKeypadClick={onKeypadClick} historyOn={historyOn} />
     </Grid>
   )
 }
