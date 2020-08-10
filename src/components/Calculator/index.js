@@ -47,7 +47,7 @@ const Calculator = () => {
       else {
         let command = button.function
         if (command === '()') {
-          setOpenBracket(!openBracket)
+          setOpenBracket(openBracket => !openBracket)
           if (openBracket) command = ')'
           else command = '('
           return setCommands(commands => commands + command.toString())
@@ -106,7 +106,7 @@ const Calculator = () => {
 
   const backSpace = () => {
     var string = commands // make a separate copy of the array
-    if (string.slice(-1) === ')' || string.slice(-1) === '(') setOpenBracket(!openBracket) // if removed item was ( or )
+    if (string.slice(-1) === ')' || string.slice(-1) === '(') setOpenBracket(openBracket => !openBracket) // if removed item was ( or )
     setCommands(string.slice(0, -1));
   }
 
@@ -176,7 +176,7 @@ const Calculator = () => {
         )}
         <div className={classes.divider} >
           <IconButton >
-            <HistoryIcon onClick={() => setHistoryOn(!historyOn)} />
+            <HistoryIcon onClick={() => setHistoryOn(historyOn => !historyOn)} />
           </IconButton>
           <div className={classes.buttonDivider} >
             {invalid && (<><ErrorIcon />{' '}Invalid</>)}
